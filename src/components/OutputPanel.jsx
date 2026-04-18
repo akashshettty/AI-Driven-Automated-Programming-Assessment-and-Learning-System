@@ -2,142 +2,148 @@ import React from 'react';
 import { Terminal, CheckCircle, XCircle, Clock, Keyboard } from 'lucide-react';
 
 const OutputPanel = ({ output, isRunning, userInput, onInputChange }) => {
-    return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-            {/* Input Section */}
-            <div style={{
-                padding: '0.75rem',
-                background: 'var(--bg-tertiary)',
-                borderBottom: '1px solid var(--border-color)'
-            }}>
-                <div className="flex items-center gap-2" style={{ marginBottom: '0.5rem' }}>
-                    <Keyboard size={16} color="var(--accent-primary)" />
-                    <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>Program Input (stdin)</span>
-                </div>
-                <textarea
-                    value={userInput}
-                    onChange={(e) => onInputChange(e.target.value)}
-                    placeholder="Enter input for your program (e.g., numbers, text)&#10;Multiple lines supported"
-                    style={{
-                        width: '100%',
-                        minHeight: '60px',
-                        padding: '0.5rem',
-                        background: 'var(--bg-primary)',
-                        border: '1px solid var(--border-accent)',
-                        borderRadius: 'var(--radius-sm)',
-                        color: 'var(--text-primary)',
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '0.8125rem',
-                        resize: 'vertical'
-                    }}
-                />
-            </div>
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
-            {/* Output Section */}
-            <div style={{ flex: 1, overflow: 'auto' }}>
-                {isRunning ? (
-                    <div className="output-panel animate-slide-in" style={{
-                        padding: '1rem',
-                        background: 'var(--bg-tertiary)',
-                        borderRadius: 'var(--radius-md)',
-                        margin: '0.5rem'
-                    }}>
-                        <div className="flex items-center gap-2 animate-pulse">
-                            <Terminal size={20} color="var(--accent-primary)" />
-                            <span style={{ color: 'var(--text-secondary)' }}>Running code...</span>
-                        </div>
-                    </div>
-                ) : !output ? (
-                    <div className="output-panel" style={{
-                        padding: '1rem',
-                        background: 'var(--bg-tertiary)',
-                        borderRadius: 'var(--radius-md)',
-                        margin: '0.5rem',
-                        color: 'var(--text-muted)',
-                        textAlign: 'center'
-                    }}>
-                        <Terminal size={24} style={{ margin: '0 auto 0.5rem', opacity: 0.5 }} />
-                        <p>Click "Run Code" to see output</p>
-                    </div>
-                ) : (
-                    <div className="output-panel animate-slide-in" style={{
-                        padding: '1rem',
-                        background: 'var(--bg-tertiary)',
-                        borderRadius: 'var(--radius-md)',
-                        margin: '0.5rem'
-                    }}>
-                        {/* Header */}
-                        <div className="flex items-center justify-between" style={{ marginBottom: '0.75rem' }}>
-                            <div className="flex items-center gap-2">
-                                <Terminal size={18} color="var(--accent-primary)" />
-                                <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>Output</span>
-                            </div>
-                            {output.success ? (
-                                <div className="flex items-center gap-1" style={{ color: 'var(--success)', fontSize: '0.75rem' }}>
-                                    <CheckCircle size={14} />
-                                    <span>Success</span>
-                                </div>
-                            ) : (
-                                <div className="flex items-center gap-1" style={{ color: 'var(--error)', fontSize: '0.75rem' }}>
-                                    <XCircle size={14} />
-                                    <span>Failed</span>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Output Content */}
-                        {output.output && output.output.trim().length > 0 && (
-                            <div style={{
-                                background: 'var(--bg-primary)',
-                                padding: '0.75rem',
-                                borderRadius: 'var(--radius-sm)',
-                                marginBottom: output.error && output.error.trim().length > 0 ? '0.75rem' : 0,
-                                fontFamily: 'var(--font-mono)',
-                                fontSize: '0.8125rem',
-                                whiteSpace: 'pre-wrap',
-                                overflowX: 'auto',
-                                color: 'var(--text-primary)'
-                            }}>
-                                {output.output}
-                            </div>
-                        )}
-
-                        {/* Error Content */}
-                        {output.error && output.error.trim().length > 0 && (
-                            <div style={{
-                                background: 'rgba(239, 68, 68, 0.1)',
-                                border: '1px solid var(--error)',
-                                padding: '0.75rem',
-                                borderRadius: 'var(--radius-sm)',
-                                fontFamily: 'var(--font-mono)',
-                                fontSize: '0.8125rem',
-                                whiteSpace: 'pre-wrap',
-                                overflowX: 'auto',
-                                color: 'var(--error)'
-                            }}>
-                                {output.error}
-                            </div>
-                        )}
-
-                        {/* Exit Code */}
-                        {output.exitCode !== undefined && (
-                            <div style={{
-                                marginTop: '0.75rem',
-                                fontSize: '0.75rem',
-                                color: 'var(--text-muted)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '0.5rem'
-                            }}>
-                                <Clock size={12} />
-                                <span>Exit code: {output.exitCode}</span>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div>
+      {/* stdin */}
+      <div style={{
+        padding: '0.65rem 0.85rem',
+        background: 'rgba(11,17,32,0.6)',
+        borderBottom: '1px solid var(--border)',
+      }}>
+        <div className="flex items-center gap-2" style={{ marginBottom: '0.4rem' }}>
+          <Keyboard size={13} color="var(--cyan)" />
+          <span style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)' }}>
+            stdin
+          </span>
         </div>
-    );
+        <textarea
+          value={userInput}
+          onChange={(e) => onInputChange(e.target.value)}
+          placeholder={"Enter input for your program…\nMultiple lines supported"}
+          style={{
+            width: '100%',
+            minHeight: '52px',
+            maxHeight: '100px',
+            padding: '0.45rem 0.65rem',
+            background: 'rgba(6,10,22,0.9)',
+            border: '1px solid var(--border-accent)',
+            borderRadius: 'var(--r-md)',
+            color: 'var(--text-primary)',
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.78rem',
+            resize: 'vertical',
+            lineHeight: 1.6,
+          }}
+        />
+      </div>
+
+      {/* Output Area */}
+      <div style={{ flex: 1, overflow: 'auto', padding: '0.6rem' }}>
+
+        {isRunning && (
+          <div className="animate-slide-in" style={{
+            display: 'flex', alignItems: 'center', gap: '0.75rem',
+            padding: '0.85rem 1rem',
+            background: 'rgba(16,185,129,0.06)',
+            border: '1px solid rgba(16,185,129,0.2)',
+            borderRadius: 'var(--r-lg)',
+          }}>
+            <span style={{
+              width: 16, height: 16, flexShrink: 0,
+              border: '2px solid rgba(16,185,129,0.3)',
+              borderTopColor: 'var(--green)',
+              borderRadius: '50%',
+              animation: 'rotateSpin 0.8s linear infinite',
+              display: 'inline-block',
+            }} />
+            <span style={{ fontSize: '0.8rem', color: 'var(--green)', fontWeight: 500 }}>Executing code…</span>
+          </div>
+        )}
+
+        {!isRunning && !output && (
+          <div style={{
+            padding: '1.5rem',
+            textAlign: 'center',
+            color: 'var(--text-muted)',
+          }}>
+            <div style={{
+              width: 44, height: 44, margin: '0 auto 0.75rem',
+              background: 'rgba(6,182,212,0.06)',
+              borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              border: '1px solid rgba(6,182,212,0.12)',
+            }}>
+              <Terminal size={20} color="var(--text-muted)" />
+            </div>
+            <p style={{ fontSize: '0.8rem' }}>Click <strong style={{ color: 'var(--green)' }}>Run Code</strong> to see output</p>
+          </div>
+        )}
+
+        {!isRunning && output && (
+          <div className="animate-slide-in" style={{
+            background: 'var(--bg-tertiary)',
+            border: `1px solid ${output.success ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.3)'}`,
+            borderRadius: 'var(--r-xl)',
+            overflow: 'hidden',
+            ...(output.success ? {} : { animation: 'glowPulseRed 2s ease-in-out 2' }),
+          }}>
+            {/* Header */}
+            <div style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '0.6rem 1rem',
+              background: output.success ? 'rgba(16,185,129,0.06)' : 'rgba(239,68,68,0.06)',
+              borderBottom: `1px solid ${output.success ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)'}`,
+            }}>
+              <div className="flex items-center gap-2">
+                <Terminal size={14} color={output.success ? 'var(--green)' : 'var(--danger)'} />
+                <span style={{ fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Output</span>
+              </div>
+              <span className={`badge ${output.success ? 'badge-success' : 'badge-error'}`}>
+                {output.success ? (
+                  <><CheckCircle size={10} /> Success</>
+                ) : (
+                  <><XCircle size={10} /> Failed</>
+                )}
+              </span>
+            </div>
+
+            <div style={{ padding: '0.75rem' }}>
+              {/* stdout */}
+              {output.output && output.output.trim().length > 0 && (
+                <div className="terminal-block" style={{ marginBottom: output.error && output.error.trim() ? '0.5rem' : 0 }}>
+                  {output.output}
+                </div>
+              )}
+
+              {/* stderr */}
+              {output.error && output.error.trim().length > 0 && (
+                <div className="terminal-block error-output">
+                  {output.error}
+                </div>
+              )}
+
+              {/* Exit code */}
+              {output.exitCode !== undefined && (
+                <div style={{
+                  marginTop: '0.5rem',
+                  fontSize: '0.7rem',
+                  color: 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  fontFamily: 'var(--font-mono)',
+                }}>
+                  <Clock size={10} />
+                  Exit code: {output.exitCode}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default OutputPanel;
