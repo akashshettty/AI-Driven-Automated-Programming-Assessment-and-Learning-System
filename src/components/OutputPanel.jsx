@@ -1,42 +1,44 @@
 import React from 'react';
 import { Terminal, CheckCircle, XCircle, Clock, Keyboard } from 'lucide-react';
 
-const OutputPanel = ({ output, isRunning, userInput, onInputChange }) => {
+const OutputPanel = ({ output, isRunning, userInput, onInputChange, compact }) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
       {/* stdin */}
-      <div style={{
-        padding: '0.65rem 0.85rem',
-        background: 'rgba(11,17,32,0.6)',
-        borderBottom: '1px solid var(--border)',
-      }}>
-        <div className="flex items-center gap-2" style={{ marginBottom: '0.4rem' }}>
-          <Keyboard size={13} color="var(--cyan)" />
-          <span style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)' }}>
-            stdin
-          </span>
+      {!compact && (
+        <div style={{
+          padding: '0.65rem 0.85rem',
+          background: 'rgba(11,17,32,0.6)',
+          borderBottom: '1px solid var(--border)',
+        }}>
+          <div className="flex items-center gap-2" style={{ marginBottom: '0.4rem' }}>
+            <Keyboard size={13} color="var(--cyan)" />
+            <span style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)' }}>
+              stdin
+            </span>
+          </div>
+          <textarea
+            value={userInput}
+            onChange={(e) => onInputChange(e.target.value)}
+            placeholder={"Enter input for your program…\nMultiple lines supported"}
+            style={{
+              width: '100%',
+              minHeight: '52px',
+              maxHeight: '100px',
+              padding: '0.45rem 0.65rem',
+              background: 'rgba(6,10,22,0.9)',
+              border: '1px solid var(--border-accent)',
+              borderRadius: 'var(--r-md)',
+              color: 'var(--text-primary)',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '0.78rem',
+              resize: 'vertical',
+              lineHeight: 1.6,
+            }}
+          />
         </div>
-        <textarea
-          value={userInput}
-          onChange={(e) => onInputChange(e.target.value)}
-          placeholder={"Enter input for your program…\nMultiple lines supported"}
-          style={{
-            width: '100%',
-            minHeight: '52px',
-            maxHeight: '100px',
-            padding: '0.45rem 0.65rem',
-            background: 'rgba(6,10,22,0.9)',
-            border: '1px solid var(--border-accent)',
-            borderRadius: 'var(--r-md)',
-            color: 'var(--text-primary)',
-            fontFamily: 'var(--font-mono)',
-            fontSize: '0.78rem',
-            resize: 'vertical',
-            lineHeight: 1.6,
-          }}
-        />
-      </div>
+      )}
 
       {/* Output Area */}
       <div style={{ flex: 1, overflow: 'auto', padding: '0.6rem' }}>
