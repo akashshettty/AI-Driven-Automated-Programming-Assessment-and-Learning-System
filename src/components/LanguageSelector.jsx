@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChevronDown } from 'lucide-react';
 
-const LANGUAGES = [
+export const LANGUAGES = [
   { value: 'cpp', label: 'C++', monaco: 'cpp' },
   { value: 'java', label: 'Java', monaco: 'java' },
   { value: 'python', label: 'Python', monaco: 'python' },
@@ -16,28 +16,28 @@ export default function LanguageSelector({ value, onChange }) {
         onChange={e => onChange(e.target.value)}
         style={{
           appearance: 'none', WebkitAppearance: 'none',
-          background: 'rgba(22,32,50,0.9)',
-          border: '1px solid var(--border-accent)',
-          borderRadius: 'var(--r-lg)',
-          color: 'var(--text-primary)',
+          background: 'var(--bg-elevated)',
+          border: '1px solid var(--border-mid)',
+          borderRadius: 'var(--r-md)',
+          color: '#fff',
           fontFamily: 'var(--font-sans)',
-          fontSize: '0.8rem',
+          fontSize: '0.78rem',
           fontWeight: 500,
-          padding: '0.4rem 2.25rem 0.4rem 0.85rem',
+          padding: '0.35rem 2rem 0.35rem 0.75rem',
           cursor: 'pointer',
           outline: 'none',
           transition: 'border-color 0.2s',
         }}
-        onFocus={e => e.target.style.borderColor = 'var(--cyan)'}
-        onBlur={e => e.target.style.borderColor = 'var(--border-accent)'}
+        onFocus={e => e.target.style.borderColor = 'var(--border-white)'}
+        onBlur={e => e.target.style.borderColor = 'var(--border-mid)'}
       >
         {LANGUAGES.map(l => (
-          <option key={l.value} value={l.value} style={{ background: '#111827' }}>{l.label}</option>
+          <option key={l.value} value={l.value} style={{ background: '#1E1E1E', color: '#fff' }}>
+            {l.label}
+          </option>
         ))}
       </select>
-      <ChevronDown size={12} color="var(--text-muted)" style={{ position: 'absolute', right: '0.6rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
+      <ChevronDown size={11} color="var(--text-muted)" style={{ position: 'absolute', right: '0.5rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none' }} />
     </div>
   );
 }
-
-export { LANGUAGES };

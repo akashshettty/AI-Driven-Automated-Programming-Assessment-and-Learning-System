@@ -10,12 +10,8 @@ const ChatPanel = ({ code, messages, onSendMessage, isLoading }) => {
   }, [messages, isLoading]);
 
   const handleSend = () => {
-    if (input.trim() && !isLoading) {
-      onSendMessage(input);
-      setInput('');
-    }
+    if (input.trim() && !isLoading) { onSendMessage(input); setInput(''); }
   };
-
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
@@ -27,53 +23,64 @@ const ChatPanel = ({ code, messages, onSendMessage, isLoading }) => {
       <div style={{ flex: 1, overflowY: 'auto', padding: '1rem 0.9rem' }}>
 
         {messages.length === 0 && (
-          <div style={{ textAlign: 'center', padding: '2rem 1rem', color: 'var(--text-muted)' }}>
+          <div style={{ textAlign: 'center', padding: '2.5rem 1rem', color: 'var(--text-muted)' }}>
             <div style={{
-              width: 56, height: 56, margin: '0 auto 1rem',
-              background: 'rgba(6,182,212,0.07)',
-              borderRadius: '50%',
+              width: 48, height: 48, margin: '0 auto 1rem',
+              background: 'var(--bg-elevated)', borderRadius: 'var(--r-lg)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: '1px solid rgba(6,182,212,0.15)',
+              border: '1px solid var(--border-mid)',
             }}>
-              <MessageSquare size={24} color="var(--cyan)" style={{ opacity: 0.7 }} />
+              <MessageSquare size={20} color="var(--text-muted)" />
             </div>
-            <p style={{ fontWeight: 500, color: 'var(--text-secondary)', fontSize: '0.875rem' }}>AI Code Assistant</p>
-            <p style={{ fontSize: '0.78rem', marginTop: '0.4rem', lineHeight: 1.65 }}>
-              Ask me anything about your code!<br />
-              <span style={{ color: 'var(--text-muted)', fontSize: '0.72rem' }}>
-                "What does this do?" · "How to optimize?" · "Why does this fail?"
-              </span>
+            <p style={{ fontWeight: 600, color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '0.45rem' }}>AI Code Assistant</p>
+            <p style={{ fontSize: '0.78rem', lineHeight: 1.7 }}>
+              Ask me anything about your code.
             </p>
+            <div style={{ marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+              {['"What does this function do?"', '"How can I optimise this?"', '"Why does this test fail?"'].map(q => (
+                <div key={q} style={{
+                  fontSize: '0.72rem', color: 'var(--text-muted)', padding: '0.3rem 0.75rem',
+                  border: '1px solid var(--border)', borderRadius: 'var(--r-sm)',
+                  cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s',
+                  background: 'var(--bg-elevated)', textAlign: 'left',
+                }}
+                  onClick={() => { setInput(q.replace(/"/g, '')); }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-bright)'; e.currentTarget.style.color = '#fff'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-muted)'; }}>
+                  {q}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
         {messages.map((msg) => (
-          <div key={msg.id} style={{ marginBottom: '0.6rem' }}>
+          <div key={msg.id} style={{ marginBottom: '0.7rem' }}>
             <div style={{
               display: 'flex', alignItems: 'flex-start', gap: '0.5rem',
               flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
             }}>
               {/* Avatar */}
               <div style={{
-                width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
-                background: msg.role === 'user' ? 'var(--cyan-dim)' : 'var(--purple-dim)',
-                border: `1px solid ${msg.role === 'user' ? 'rgba(6,182,212,0.3)' : 'rgba(139,92,246,0.3)'}`,
+                width: 24, height: 24, borderRadius: 'var(--r-xs)', flexShrink: 0,
+                background: msg.role === 'user' ? 'rgba(255,255,255,0.1)' : 'var(--bg-elevated)',
+                border: `1px solid ${msg.role === 'user' ? 'var(--border-bright)' : 'var(--border)'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {msg.role === 'user'
-                  ? <User size={12} color="var(--cyan)" />
-                  : <Bot size={12} color="var(--purple)" />}
+                  ? <User size={12} color="#fff" />
+                  : <Bot size={12} color="var(--text-muted)" />}
               </div>
-
               {/* Bubble */}
-              <div className={msg.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-ai'}
-                style={{ maxWidth: '82%' }}>
-                <div style={{ fontSize: '0.72rem', fontWeight: 600, marginBottom: '0.35rem',
-                  color: msg.role === 'user' ? 'var(--cyan)' : 'var(--purple)',
-                  letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+              <div className={msg.role === 'user' ? 'chat-bubble-user' : 'chat-bubble-ai'} style={{ maxWidth: '82%' }}>
+                <div style={{
+                  fontSize: '0.65rem', fontWeight: 700, marginBottom: '0.3rem',
+                  color: msg.role === 'user' ? 'var(--text-secondary)' : 'var(--text-muted)',
+                  letterSpacing: '0.06em', textTransform: 'uppercase',
+                }}>
                   {msg.role === 'user' ? 'You' : 'AI Assistant'}
                 </div>
-                <div style={{ fontSize: '0.835rem', whiteSpace: 'pre-wrap', lineHeight: 1.65, color: 'var(--text-primary)' }}>
+                <div style={{ fontSize: '0.835rem', whiteSpace: 'pre-wrap', lineHeight: 1.7, color: '#fff' }}>
                   {msg.content}
                 </div>
               </div>
@@ -85,17 +92,16 @@ const ChatPanel = ({ code, messages, onSendMessage, isLoading }) => {
         {isLoading && (
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.6rem' }}>
             <div style={{
-              width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
-              background: 'var(--purple-dim)', border: '1px solid rgba(139,92,246,0.3)',
+              width: 24, height: 24, borderRadius: 'var(--r-xs)', flexShrink: 0,
+              background: 'var(--bg-elevated)', border: '1px solid var(--border)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <Bot size={12} color="var(--purple)" />
+              <Bot size={12} color="var(--text-muted)" />
             </div>
             <div className="chat-bubble-ai" style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '0.6rem 0.9rem' }}>
-              {[0,1,2].map(i => (
+              {[0, 1, 2].map(i => (
                 <span key={i} style={{
-                  width: 6, height: 6, borderRadius: '50%',
-                  background: 'var(--purple)',
+                  width: 5, height: 5, borderRadius: '50%', background: 'var(--text-muted)',
                   display: 'inline-block',
                   animation: `pulse 1.2s ease-in-out ${i * 0.2}s infinite`,
                 }} />
@@ -103,50 +109,36 @@ const ChatPanel = ({ code, messages, onSendMessage, isLoading }) => {
             </div>
           </div>
         )}
-
         <div ref={bottomRef} />
       </div>
 
-      {/* Input Area */}
-      <div style={{
-        borderTop: '1px solid var(--border)',
-        padding: '0.75rem',
-        background: 'rgba(11,17,32,0.6)',
-      }}>
+      {/* Input */}
+      <div style={{ borderTop: '1px solid var(--border)', padding: '0.75rem', background: 'var(--bg-surface)' }}>
         <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'flex-end' }}>
           <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
+            value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={handleKeyPress}
             placeholder="Ask about your code…"
-            disabled={isLoading}
-            rows={2}
+            disabled={isLoading} rows={2}
             style={{
-              flex: 1,
-              minHeight: '52px',
-              maxHeight: '120px',
+              flex: 1, minHeight: '50px', maxHeight: '110px',
               padding: '0.5rem 0.75rem',
-              background: 'rgba(6,10,22,0.9)',
-              border: '1px solid var(--border-accent)',
-              borderRadius: 'var(--r-lg)',
-              color: 'var(--text-primary)',
-              fontSize: '0.825rem',
-              fontFamily: 'var(--font-sans)',
-              resize: 'none',
-              lineHeight: 1.55,
+              background: 'var(--bg-sunken)',
+              border: '1px solid var(--border-mid)',
+              borderRadius: 'var(--r-md)',
+              color: '#fff', fontSize: '0.82rem',
+              fontFamily: 'var(--font-sans)', resize: 'none',
+              lineHeight: 1.55, outline: 'none', transition: 'border-color 0.2s',
             }}
+            onFocus={e => e.target.style.borderColor = 'var(--border-white)'}
+            onBlur={e => e.target.style.borderColor = 'var(--border-mid)'}
           />
-          <button
-            onClick={handleSend}
-            disabled={!input.trim() || isLoading}
+          <button onClick={handleSend} disabled={!input.trim() || isLoading}
             className="btn btn-primary"
-            style={{ padding: '0.55rem 0.9rem', borderRadius: 'var(--r-lg)', alignSelf: 'flex-end', flexShrink: 0 }}
-            title="Send (Enter)"
-          >
-            <Send size={15} />
+            style={{ padding: '0.55rem 0.85rem', borderRadius: 'var(--r-md)', alignSelf: 'flex-end', flexShrink: 0 }}>
+            <Send size={13} />
           </button>
         </div>
-        <div style={{ fontSize: '0.67rem', color: 'var(--text-muted)', marginTop: '0.35rem', textAlign: 'right' }}>
+        <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.35rem', textAlign: 'right' }}>
           Enter to send · Shift+Enter for new line
         </div>
       </div>

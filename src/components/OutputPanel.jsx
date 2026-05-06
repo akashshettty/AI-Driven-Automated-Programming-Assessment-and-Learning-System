@@ -1,143 +1,101 @@
 import React from 'react';
-import { Terminal, CheckCircle, XCircle, Clock, Keyboard } from 'lucide-react';
+import { Terminal, CheckCircle, XCircle, Clock } from 'lucide-react';
 
 const OutputPanel = ({ output, isRunning, userInput, onInputChange, compact }) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
-      {/* stdin */}
+      {/* stdin — non-compact mode only */}
       {!compact && (
-        <div style={{
-          padding: '0.65rem 0.85rem',
-          background: 'rgba(11,17,32,0.6)',
-          borderBottom: '1px solid var(--border)',
-        }}>
-          <div className="flex items-center gap-2" style={{ marginBottom: '0.4rem' }}>
-            <Keyboard size={13} color="var(--cyan)" />
-            <span style={{ fontSize: '0.72rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)' }}>
-              stdin
-            </span>
-          </div>
+        <div style={{ padding: '0.65rem 0.85rem', background: 'var(--bg-surface)', borderBottom: '1px solid var(--border)' }}>
+          <div style={{ fontSize: '0.66rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>stdin</div>
           <textarea
             value={userInput}
             onChange={(e) => onInputChange(e.target.value)}
-            placeholder={"Enter input for your program…\nMultiple lines supported"}
+            placeholder="Enter input for your program…"
             style={{
-              width: '100%',
-              minHeight: '52px',
-              maxHeight: '100px',
+              width: '100%', minHeight: '52px', maxHeight: '100px',
               padding: '0.45rem 0.65rem',
-              background: 'rgba(6,10,22,0.9)',
-              border: '1px solid var(--border-accent)',
-              borderRadius: 'var(--r-md)',
-              color: 'var(--text-primary)',
-              fontFamily: 'var(--font-mono)',
-              fontSize: '0.78rem',
-              resize: 'vertical',
-              lineHeight: 1.6,
+              background: 'var(--bg-sunken)', border: '1px solid var(--border-mid)',
+              borderRadius: 'var(--r-md)', color: '#fff',
+              fontFamily: 'var(--font-mono)', fontSize: '0.78rem',
+              resize: 'vertical', outline: 'none',
             }}
           />
         </div>
       )}
 
-      {/* Output Area */}
       <div style={{ flex: 1, overflow: 'auto', padding: '0.6rem' }}>
 
+        {/* Running */}
         {isRunning && (
           <div className="animate-slide-in" style={{
-            display: 'flex', alignItems: 'center', gap: '0.75rem',
-            padding: '0.85rem 1rem',
-            background: 'rgba(16,185,129,0.06)',
-            border: '1px solid rgba(16,185,129,0.2)',
-            borderRadius: 'var(--r-lg)',
+            display: 'flex', alignItems: 'center', gap: '0.65rem',
+            padding: '0.75rem 1rem',
+            background: 'var(--bg-elevated)', border: '1px solid var(--border)',
+            borderRadius: 'var(--r-md)',
           }}>
             <span style={{
-              width: 16, height: 16, flexShrink: 0,
-              border: '2px solid rgba(16,185,129,0.3)',
-              borderTopColor: 'var(--green)',
-              borderRadius: '50%',
-              animation: 'rotateSpin 0.8s linear infinite',
+              width: 14, height: 14, flexShrink: 0,
+              border: '1.5px solid var(--border-mid)',
+              borderTopColor: '#fff', borderRadius: '50%',
               display: 'inline-block',
+              animation: 'rotateSpin 0.8s linear infinite',
             }} />
-            <span style={{ fontSize: '0.8rem', color: 'var(--green)', fontWeight: 500 }}>Executing code…</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>Executing code…</span>
           </div>
         )}
 
+        {/* Empty */}
         {!isRunning && !output && (
-          <div style={{
-            padding: '1.5rem',
-            textAlign: 'center',
-            color: 'var(--text-muted)',
-          }}>
+          <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
             <div style={{
-              width: 44, height: 44, margin: '0 auto 0.75rem',
-              background: 'rgba(6,182,212,0.06)',
-              borderRadius: '50%',
+              width: 40, height: 40, margin: '0 auto 0.75rem',
+              background: 'var(--bg-elevated)', borderRadius: 'var(--r-md)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: '1px solid rgba(6,182,212,0.12)',
+              border: '1px solid var(--border)',
             }}>
-              <Terminal size={20} color="var(--text-muted)" />
+              <Terminal size={17} color="var(--text-muted)" />
             </div>
-            <p style={{ fontSize: '0.8rem' }}>Click <strong style={{ color: 'var(--green)' }}>Run Code</strong> to see output</p>
+            <p style={{ fontSize: '0.8rem' }}>Click <strong style={{ color: '#fff' }}>Run</strong> to see output</p>
           </div>
         )}
 
+        {/* Output */}
         {!isRunning && output && (
           <div className="animate-slide-in" style={{
-            background: 'var(--bg-tertiary)',
-            border: `1px solid ${output.success ? 'rgba(16,185,129,0.25)' : 'rgba(239,68,68,0.3)'}`,
-            borderRadius: 'var(--r-xl)',
-            overflow: 'hidden',
-            ...(output.success ? {} : { animation: 'glowPulseRed 2s ease-in-out 2' }),
+            background: 'var(--bg-elevated)',
+            border: `1px solid ${output.success ? 'rgba(52,211,153,0.2)' : 'rgba(248,113,113,0.2)'}`,
+            borderRadius: 'var(--r-lg)', overflow: 'hidden',
           }}>
             {/* Header */}
             <div style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '0.6rem 1rem',
-              background: output.success ? 'rgba(16,185,129,0.06)' : 'rgba(239,68,68,0.06)',
-              borderBottom: `1px solid ${output.success ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)'}`,
+              padding: '0.5rem 0.9rem',
+              background: output.success ? 'rgba(52,211,153,0.05)' : 'rgba(248,113,113,0.05)',
+              borderBottom: `1px solid ${output.success ? 'rgba(52,211,153,0.1)' : 'rgba(248,113,113,0.1)'}`,
             }}>
-              <div className="flex items-center gap-2">
-                <Terminal size={14} color={output.success ? 'var(--green)' : 'var(--danger)'} />
-                <span style={{ fontWeight: 600, fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Output</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                <Terminal size={12} color={output.success ? 'var(--green)' : 'var(--danger)'} />
+                <span style={{ fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Output</span>
               </div>
               <span className={`badge ${output.success ? 'badge-success' : 'badge-error'}`}>
-                {output.success ? (
-                  <><CheckCircle size={10} /> Success</>
-                ) : (
-                  <><XCircle size={10} /> Failed</>
-                )}
+                {output.success ? <><CheckCircle size={9} /> Success</> : <><XCircle size={9} /> Failed</>}
               </span>
             </div>
 
-            <div style={{ padding: '0.75rem' }}>
-              {/* stdout */}
-              {output.output && output.output.trim().length > 0 && (
-                <div className="terminal-block" style={{ marginBottom: output.error && output.error.trim() ? '0.5rem' : 0 }}>
+            <div style={{ padding: '0.65rem' }}>
+              {output.output?.trim() && (
+                <div className="terminal-block" style={{ marginBottom: output.error?.trim() ? '0.4rem' : 0 }}>
                   {output.output}
                 </div>
               )}
-
-              {/* stderr */}
-              {output.error && output.error.trim().length > 0 && (
-                <div className="terminal-block error-output">
-                  {output.error}
-                </div>
+              {output.error?.trim() && (
+                <div className="terminal-block error-output">{output.error}</div>
               )}
-
-              {/* Exit code */}
               {output.exitCode !== undefined && (
-                <div style={{
-                  marginTop: '0.5rem',
-                  fontSize: '0.7rem',
-                  color: 'var(--text-muted)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                  fontFamily: 'var(--font-mono)',
-                }}>
-                  <Clock size={10} />
-                  Exit code: {output.exitCode}
+                <div style={{ marginTop: '0.4rem', fontSize: '0.67rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem', fontFamily: 'var(--font-mono)' }}>
+                  <Clock size={9} /> Exit code: {output.exitCode}
                 </div>
               )}
             </div>
