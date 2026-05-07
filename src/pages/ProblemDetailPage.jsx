@@ -99,7 +99,7 @@ export default function ProblemDetailPage() {
     try {
       const res = await fetch('http://localhost:3000/api/execute', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, input: userInput }),
+        body: JSON.stringify({ code, input: userInput, language, problemSlug: slug }),
       });
       setOutput(await res.json());
     } catch {
@@ -115,7 +115,7 @@ export default function ProblemDetailPage() {
       try {
         const res = await fetch('http://localhost:3000/api/execute', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code, input: tc.input }),
+          body: JSON.stringify({ code, input: tc.input, language, problemSlug: slug }),
         });
         const result = await res.json();
         const actual = (result.output || '').trim();
