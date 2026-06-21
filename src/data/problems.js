@@ -71,7 +71,7 @@ var twoSum = function(nums, target) {
       { input: 'nums = [3,3]\ntarget = 6', expectedOutput: '[0,1]' },
     ],
     hiddenTests: [
-      { input: 'nums = [1,5,3,2]\ntarget = 4', expectedOutput: '[2,3]' },
+      { input: 'nums = [1,5,3,2]\ntarget = 4', expectedOutput: '[0,2]' },
       { input: 'nums = [0,4,3,0]\ntarget = 0', expectedOutput: '[0,3]' },
     ],
     hints: [

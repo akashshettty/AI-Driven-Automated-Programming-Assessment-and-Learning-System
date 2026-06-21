@@ -30,6 +30,56 @@ import LanguageSelector from '../components/LanguageSelector';
 const LANG_MONACO = { cpp: 'cpp', java: 'java', python: 'python', javascript: 'javascript' };
 const LANG_EXT    = { cpp: 'cpp', java: 'java', python: 'py', javascript: 'js' };
 
+// ─── Helpers ────────────────────────────────────────────────────────────────
+const parseInputVars = (raw) => {
+  const vars = {};
+  (raw || '').split('\n').forEach(line => {
+    const m = line.match(/^\s*(\w+)\s*=\s*(.+)$/);
+    if (m) {
+      const key = m[1].trim();
+      const value = m[2].trim();
+      try {
+        // Try to parse as JSON (handling simple python-style single quotes)
+        vars[key] = JSON.parse(value.replace(/'/g, '"'));
+      } catch {
+        vars[key] = value.replace(/^["'](.*)["']$/, '$1');
+      }
+    }
+  });
+  return vars;
+};
+
+const validateResult = (problemSlug, actual, expected, inputVars) => {
+  try {
+    const actualStr = (actual || '').trim();
+    const expectedStr = (expected || '').trim();
+    
+    // If exact string match, return true immediately
+    if (actualStr === expectedStr) return true;
+
+    const actualParsed = JSON.parse(actualStr);
+    
+    if (problemSlug === 'two-sum') {
+      if (!Array.isArray(actualParsed) || actualParsed.length !== 2) return false;
+      const nums = inputVars.nums;
+      const target = Number(inputVars.target);
+      const [i, j] = actualParsed;
+      // Basic sanity check on indices
+      if (i < 0 || j < 0 || i >= nums.length || j >= nums.length || i === j) return false;
+      return nums[i] + nums[j] === target;
+    }
+    
+    // For others, try JSON comparison (handles [0,1] vs [0, 1])
+    const expectedParsed = JSON.parse(expectedStr);
+    
+    // Handle array order if problem allows (e.g. Two Sum indices can be in any order)
+    // But Two Sum is handled above. For others, usually order matters or is specified.
+    return JSON.stringify(actualParsed) === JSON.stringify(expectedParsed);
+  } catch {
+    return (actual || '').trim() === (expected || '').trim();
+  }
+};
+
 export default function ProblemDetailPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -120,9 +170,15 @@ export default function ProblemDetailPage() {
         const result = await res.json();
         const actual = (result.output || '').trim();
         const expected = (tc.expectedOutput || '').trim();
-        if (actual === expected) passedCount++;
-        else if (!failedCase) failedCase = { input: tc.input, expected, got: actual };
-      } catch {
+        const inputVars = parseInputVars(tc.input);
+
+        if (validateResult(slug, actual, expected, inputVars)) {
+          passedCount++;
+        } else if (!failedCase) {
+          failedCase = { input: tc.input, expected, got: actual };
+        }
+      } catch (err) {
+        console.error('Submission error:', err);
         failedCase = failedCase || { input: tc.input, expected: tc.expectedOutput, got: 'Error: Backend unavailable' };
       }
     }
