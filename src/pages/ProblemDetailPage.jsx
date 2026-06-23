@@ -17,6 +17,8 @@ const C = {
 };
 
 import { getProblemBySlug, problems } from '../data/problems';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 import CodeEditor from '../components/CodeEditor';
 import MentorPanel from '../components/MentorPanel';
 import OutputPanel from '../components/OutputPanel';
@@ -132,7 +134,7 @@ export default function ProblemDetailPage() {
   const handleGetHint = async () => {
     setIsAnalyzing(true); setAnalysis(null); setComplexity(null); setActiveTab('analysis');
     try {
-      const res = await fetch('http://localhost:3000/api/analyze', {
+      const res = await fetch(`${API_BASE_URL}/api/analyze`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code }),
       });
@@ -147,7 +149,7 @@ export default function ProblemDetailPage() {
   const handleRunCode = async () => {
     setIsRunning(true); setOutput(null); setTcTab('result');
     try {
-      const res = await fetch('http://localhost:3000/api/execute', {
+      const res = await fetch(`${API_BASE_URL}/api/execute`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, input: userInput, language, problemSlug: slug }),
       });
@@ -163,7 +165,7 @@ export default function ProblemDetailPage() {
     let passedCount = 0, failedCase = null;
     for (const tc of allTests) {
       try {
-        const res = await fetch('http://localhost:3000/api/execute', {
+        const res = await fetch(`${API_BASE_URL}/api/execute`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ code, input: tc.input, language, problemSlug: slug }),
         });
@@ -198,7 +200,7 @@ export default function ProblemDetailPage() {
     setChatMessages(prev => [...prev, { id: Date.now(), role: 'user', content: message }]);
     setIsChatLoading(true);
     try {
-      const res = await fetch('http://localhost:3000/api/chat', {
+      const res = await fetch(`${API_BASE_URL}/api/chat`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code, message, history: chatMessages }),
       });
@@ -213,7 +215,7 @@ export default function ProblemDetailPage() {
     setActiveTab('feedback');
     if (submitResult?.failedCase) {
       try {
-        const res = await fetch('http://localhost:3000/api/chat', {
+        const res = await fetch(`${API_BASE_URL}/api/chat`, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             code,
