@@ -41,7 +41,7 @@ export default function ProblemsPage() {
   );
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--bg-base)', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--bg-base)', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
 
       {/* Navbar */}
       <nav style={{
@@ -69,7 +69,7 @@ export default function ProblemsPage() {
         </div>
       </nav>
 
-      <div style={{ flex: 1, maxWidth: 1040, width: '100%', margin: '0 auto', padding: '2.5rem 1.5rem' }}>
+      <div style={{ flex: 1, maxWidth: 1040, width: '100%', margin: '0 auto', padding: '2.5rem 1.5rem', boxSizing: 'border-box' }}>
 
         {/* Page heading */}
         <div style={{ marginBottom: '1.75rem' }}>
@@ -109,7 +109,10 @@ export default function ProblemsPage() {
           border: '1px solid var(--border)',
           borderRadius: 'var(--r-xl)',
           overflow: 'hidden',
+          overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch',
         }}>
+          <div style={{ minWidth: 600 }}>
           {/* Header row */}
           <div style={{
             display: 'grid', gridTemplateColumns: '32px 52px 1fr 110px 110px 90px',
@@ -161,6 +164,7 @@ export default function ProblemsPage() {
               <span style={{ fontSize: '0.77rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>{p.acceptance}</span>
             </div>
           ))}
+          </div>
         </div>
       </div>
     </div>
