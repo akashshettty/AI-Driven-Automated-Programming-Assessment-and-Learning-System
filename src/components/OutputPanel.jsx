@@ -1,29 +1,9 @@
 import React from 'react';
-import { Terminal, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Terminal, Clock } from 'lucide-react';
 
-const OutputPanel = ({ output, isRunning, userInput, onInputChange, compact }) => {
+const OutputPanel = ({ runResults, activeTestcase, isRunning }) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-
-      {/* stdin — non-compact mode only */}
-      {!compact && (
-        <div style={{ padding: '0.65rem 0.85rem', background: 'var(--bg-surface)', borderBottom: '1px solid var(--border)' }}>
-          <div style={{ fontSize: '0.66rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.09em', color: 'var(--text-muted)', marginBottom: '0.4rem' }}>stdin</div>
-          <textarea
-            value={userInput}
-            onChange={(e) => onInputChange(e.target.value)}
-            placeholder="Enter input for your program…"
-            style={{
-              width: '100%', minHeight: '52px', maxHeight: '100px',
-              padding: '0.45rem 0.65rem',
-              background: 'var(--bg-sunken)', border: '1px solid var(--border-mid)',
-              borderRadius: 'var(--r-md)', color: '#fff',
-              fontFamily: 'var(--font-mono)', fontSize: '0.78rem',
-              resize: 'vertical', outline: 'none',
-            }}
-          />
-        </div>
-      )}
 
       <div style={{ flex: 1, overflow: 'auto', padding: '0.6rem' }}>
 
@@ -47,7 +27,7 @@ const OutputPanel = ({ output, isRunning, userInput, onInputChange, compact }) =
         )}
 
         {/* Empty */}
-        {!isRunning && !output && (
+        {!isRunning && !runResults && (
           <div style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)' }}>
             <div style={{
               width: 40, height: 40, margin: '0 auto 0.75rem',
@@ -62,43 +42,75 @@ const OutputPanel = ({ output, isRunning, userInput, onInputChange, compact }) =
         )}
 
         {/* Output */}
-        {!isRunning && output && (
+        {!isRunning && runResults && runResults[activeTestcase] && (
           <div className="animate-slide-in" style={{
-            background: 'var(--bg-elevated)',
-            border: `1px solid ${output.success ? 'rgba(52,211,153,0.2)' : 'rgba(248,113,113,0.2)'}`,
-            borderRadius: 'var(--r-lg)', overflow: 'hidden',
+            display: 'flex', flexDirection: 'column', gap: '0.5rem',
           }}>
-            {/* Header */}
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '0.5rem 0.9rem',
-              background: output.success ? 'rgba(52,211,153,0.05)' : 'rgba(248,113,113,0.05)',
-              borderBottom: `1px solid ${output.success ? 'rgba(52,211,153,0.1)' : 'rgba(248,113,113,0.1)'}`,
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-                <Terminal size={12} color={output.success ? 'var(--green)' : 'var(--danger)'} />
-                <span style={{ fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Output</span>
-              </div>
-              <span className={`badge ${output.success ? 'badge-success' : 'badge-error'}`}>
-                {output.success ? <><CheckCircle size={9} /> Success</> : <><XCircle size={9} /> Failed</>}
-              </span>
-            </div>
+            {(() => {
+               const res = runResults[activeTestcase];
+               let titleColor = 'var(--text-muted)';
+               if (res.status === 'Accepted') titleColor = 'var(--green)';
+               else if (res.status === 'Wrong Answer' || res.status === 'Error') titleColor = 'var(--danger)';
 
-            <div style={{ padding: '0.65rem' }}>
-              {output.output?.trim() && (
-                <div className="terminal-block" style={{ marginBottom: output.error?.trim() ? '0.4rem' : 0 }}>
-                  {output.output}
-                </div>
-              )}
-              {output.error?.trim() && (
-                <div className="terminal-block error-output">{output.error}</div>
-              )}
-              {output.exitCode !== undefined && (
-                <div style={{ marginTop: '0.4rem', fontSize: '0.67rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem', fontFamily: 'var(--font-mono)' }}>
-                  <Clock size={9} /> Exit code: {output.exitCode}
-                </div>
-              )}
-            </div>
+               return (
+                 <>
+                   <h2 style={{ color: titleColor, fontSize: '1.25rem', fontWeight: 600, margin: '0.2rem 0 0.8rem 0' }}>
+                     {res.status}
+                   </h2>
+                   
+                   {/* If there's an execution error, show it */}
+                   {res.error?.trim() && (
+                     <div className="terminal-block error-output" style={{ marginBottom: '1rem' }}>
+                       {res.error}
+                     </div>
+                   )}
+
+                   {/* Detail blocks */}
+                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                     <div>
+                       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.4rem', fontWeight: 600 }}>Input</div>
+                       <div style={{
+                          padding: '0.65rem 0.85rem', background: 'var(--bg-sunken)', border: '1px solid var(--border-mid)',
+                          borderRadius: 'var(--r-md)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: '#fff',
+                          whiteSpace: 'pre-wrap'
+                       }}>
+                         {res.inputUsed}
+                       </div>
+                     </div>
+
+                     <div>
+                       <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.4rem', fontWeight: 600 }}>Output</div>
+                       <div style={{
+                          padding: '0.65rem 0.85rem', background: 'var(--bg-sunken)', border: '1px solid var(--border-mid)',
+                          borderRadius: 'var(--r-md)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: res.status === 'Wrong Answer' ? 'var(--danger)' : '#fff',
+                          whiteSpace: 'pre-wrap'
+                       }}>
+                         {res.output || ' '}
+                       </div>
+                     </div>
+
+                     {res.expectedOutput && (
+                       <div>
+                         <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.4rem', fontWeight: 600 }}>Expected</div>
+                         <div style={{
+                            padding: '0.65rem 0.85rem', background: 'var(--bg-sunken)', border: '1px solid var(--border-mid)',
+                            borderRadius: 'var(--r-md)', fontFamily: 'var(--font-mono)', fontSize: '0.82rem', color: 'var(--green)',
+                            whiteSpace: 'pre-wrap'
+                         }}>
+                           {res.expectedOutput}
+                         </div>
+                       </div>
+                     )}
+                   </div>
+                   
+                   {res.exitCode !== undefined && (
+                     <div style={{ marginTop: '0.7rem', fontSize: '0.7rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.3rem', fontFamily: 'var(--font-mono)' }}>
+                       <Clock size={10} /> Exit code: {res.exitCode}
+                     </div>
+                   )}
+                 </>
+               )
+            })()}
           </div>
         )}
       </div>

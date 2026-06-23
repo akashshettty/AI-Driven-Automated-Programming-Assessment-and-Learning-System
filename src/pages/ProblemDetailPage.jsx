@@ -91,7 +91,7 @@ export default function ProblemDetailPage() {
   const [code, setCode]               = useState('');
   const [analysis, setAnalysis]       = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [output, setOutput]           = useState(null);
+  const [runResults, setRunResults]   = useState(null);
   const [isRunning, setIsRunning]     = useState(false);
   const [userInput, setUserInput]     = useState('');
   const [activeTab, setActiveTab]     = useState('analysis');
@@ -108,7 +108,7 @@ export default function ProblemDetailPage() {
   useEffect(() => {
     if (problem) {
       setCode(problem.starterCode[language] || '');
-      setAnalysis(null); setOutput(null); setComplexity(null);
+      setAnalysis(null); setRunResults(null); setComplexity(null);
       setSubmitResult(null); setAiFeedback(null);
     }
   }, [problem, language]);
@@ -147,15 +147,50 @@ export default function ProblemDetailPage() {
   };
 
   const handleRunCode = async () => {
-    setIsRunning(true); setOutput(null); setTcTab('result');
+    setIsRunning(true); setRunResults(null); setTcTab('result');
+    const results = [];
     try {
-      const res = await fetch(`${API_BASE_URL}/api/execute`, {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, input: userInput, language, problemSlug: slug }),
-      });
-      setOutput(await res.json());
-    } catch {
-      setOutput({ success: false, output: '', error: 'Failed to connect to backend.', exitCode: -1 });
+      for (let i = 0; i < problem.testcases.length; i++) {
+        const tc = problem.testcases[i];
+        // Use userInput for the active tab in case the user edited it, otherwise use default
+        const inputToRun = (i === activeTestcase) ? userInput : tc.input;
+        
+        try {
+          const res = await fetch(`${API_BASE_URL}/api/execute`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code, input: inputToRun, language, problemSlug: slug }),
+          });
+          const data = await res.json();
+          
+          let status = 'Error';
+          let isCorrect = false;
+          
+          if (data.success && !data.error) {
+             const inputVars = parseInputVars(inputToRun);
+             const isOriginal = inputToRun.trim() === tc.input.trim();
+             const expectedToCompare = isOriginal ? tc.expectedOutput : null;
+             
+             if (expectedToCompare !== null) {
+                isCorrect = validateResult(slug, data.output, expectedToCompare, inputVars);
+                status = isCorrect ? 'Accepted' : 'Wrong Answer';
+             } else {
+                status = 'Finished';
+             }
+          }
+          
+          results.push({
+             ...data,
+             status,
+             isCorrect,
+             inputUsed: inputToRun,
+             expectedOutput: tc.expectedOutput,
+             isOriginal
+          });
+        } catch (err) {
+          results.push({ success: false, output: '', error: 'Failed to connect to backend.', exitCode: -1, status: 'Error', inputUsed: inputToRun });
+        }
+      }
+      setRunResults(results);
     } finally { setIsRunning(false); }
   };
 
@@ -301,7 +336,7 @@ export default function ProblemDetailPage() {
           <LanguageSelector value={language} onChange={setLanguage} />
 
           <button className="btn" style={{ padding: '0.3rem 0.65rem', fontSize: '0.73rem' }}
-            onClick={() => { setCode(problem.starterCode[language]); setAnalysis(null); setOutput(null); }}>
+            onClick={() => { setCode(problem.starterCode[language]); setAnalysis(null); setRunResults(null); }}>
             <RotateCcw size={11} /> Reset
           </button>
 
@@ -404,6 +439,27 @@ export default function ProblemDetailPage() {
                   ))}
                 </div>
               )}
+
+              {tcTab === 'result' && runResults && (
+                <div style={{ display: 'flex', gap: '0.3rem', marginLeft: '0.75rem' }}>
+                  {runResults.map((res, i) => (
+                    <button key={i} onClick={() => setActiveTestcase(i)} style={{
+                      display: 'flex', alignItems: 'center', gap: '0.3rem',
+                      padding: '0.2rem 0.55rem', borderRadius: 'var(--r-xs)', fontSize: '0.7rem', fontWeight: 600,
+                      border: `1px solid ${activeTestcase === i ? 'var(--border-bright)' : 'var(--border)'}`,
+                      background: activeTestcase === i ? 'rgba(255,255,255,0.06)' : 'transparent',
+                      color: activeTestcase === i ? '#fff' : 'var(--text-muted)',
+                      cursor: 'pointer',
+                    }}>
+                      <span style={{
+                        width: 6, height: 6, borderRadius: '50%',
+                        background: res.status === 'Accepted' ? 'var(--green)' : res.status === 'Finished' ? 'var(--text-muted)' : 'var(--danger)'
+                      }} />
+                      Case {i + 1}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div style={{ flex: 1, overflow: 'auto', padding: '0.8rem 1rem' }}>
@@ -439,7 +495,11 @@ export default function ProblemDetailPage() {
 
               {tcTab === 'result' && (
                 <div style={{ height: '100%' }}>
-                  <OutputPanel output={output} isRunning={isRunning} userInput={userInput} onInputChange={setUserInput} compact />
+                  <OutputPanel 
+                    runResults={runResults} 
+                    activeTestcase={activeTestcase} 
+                    isRunning={isRunning} 
+                  />
                 </div>
               )}
             </div>
