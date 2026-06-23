@@ -328,6 +328,342 @@ public:
       { type: 'Strategy', content: 'Keep currentSum and maxSum. For each number: currentSum = max(num, currentSum + num). maxSum = max(maxSum, currentSum). This is O(n) time, O(1) space.' },
     ],
   },
+  {
+    id: 6,
+    slug: 'find-the-highest-altitude',
+    title: 'Find the Highest Altitude',
+    difficulty: 'Easy',
+    category: 'Arrays',
+    tags: ['Array', 'Prefix Sum'],
+    acceptance: '82.8%',
+    description: `There is a biker going on a road trip. The road trip consists of \`n + 1\` points at different altitudes. The biker starts his trip on point \`0\` with altitude equal \`0\`.
+
+You are given an integer array \`gain\` of length \`n\` where \`gain[i]\` is the net gain in altitude between points \`i\` and \`i + 1\` for all (\`0 <= i < n\`). Return the **highest altitude** of a point.`,
+    examples: [
+      { input: 'gain = [-5,1,5,0,-7]', output: '1', explanation: 'The altitudes are [0,-5,-4,1,1,-6]. The highest is 1.' },
+      { input: 'gain = [-4,-3,-2,-1,4,3,2]', output: '0', explanation: 'The altitudes are [0,-4,-7,-9,-10,-6,-3,-1]. The highest is 0.' },
+    ],
+    constraints: [
+      'n == gain.length',
+      '1 <= n <= 100',
+      '-100 <= gain[i] <= 100',
+    ],
+    starterCode: {
+      cpp: `#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class Solution {
+public:
+    int largestAltitude(vector<int>& gain) {
+        // Write your solution here
+        
+    }
+};`,
+      java: `class Solution {
+    public int largestAltitude(int[] gain) {
+        // Write your solution here
+        
+    }
+}`,
+      python: `class Solution:
+    def largestAltitude(self, gain: List[int]) -> int:
+        # Write your solution here
+        pass`,
+      javascript: `/**
+ * @param {number[]} gain
+ * @return {number}
+ */
+var largestAltitude = function(gain) {
+    // Write your solution here
+    
+};`,
+    },
+    testcases: [
+      { input: 'gain = [-5,1,5,0,-7]', expectedOutput: '1' },
+      { input: 'gain = [-4,-3,-2,-1,4,3,2]', expectedOutput: '0' },
+    ],
+    hiddenTests: [
+      { input: 'gain = [10,-5,20,-15]', expectedOutput: '25' },
+      { input: 'gain = [-1,-2,-3]', expectedOutput: '0' },
+    ],
+    hints: [
+      { type: 'Nudge', content: 'What is the altitude at the very beginning?' },
+      { type: 'Clue', content: 'The altitude at point 0 is 0. The altitude at point 1 is gain[0]. The altitude at point 2 is gain[0] + gain[1].' },
+      { type: 'Strategy', content: 'Keep a running sum of the gains. The current altitude is the running sum. Keep track of the maximum altitude seen so far (starting with 0).' },
+    ],
+  },
+  {
+    id: 7,
+    slug: 'palindrome-number',
+    title: 'Palindrome Number',
+    difficulty: 'Easy',
+    category: 'Math',
+    tags: ['Math'],
+    acceptance: '53.8%',
+    description: `Given an integer \`x\`, return \`true\` if \`x\` is a **palindrome**, and \`false\` otherwise.`,
+    examples: [
+      { input: 'x = 121', output: 'true', explanation: '121 reads as 121 from left to right and from right to left.' },
+      { input: 'x = -121', output: 'false', explanation: 'From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.' },
+      { input: 'x = 10', output: 'false', explanation: 'Reads 01 from right to left. Therefore it is not a palindrome.' },
+    ],
+    constraints: [
+      '-2³¹ <= x <= 2³¹ - 1'
+    ],
+    starterCode: {
+      cpp: `#include <iostream>
+using namespace std;
+
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        // Write your solution here
+        
+    }
+};`,
+      java: `class Solution {
+    public boolean isPalindrome(int x) {
+        // Write your solution here
+        
+    }
+}`,
+      python: `class Solution:
+    def isPalindrome(self, x: int) -> bool:
+        # Write your solution here
+        pass`,
+      javascript: `/**
+ * @param {number} x
+ * @return {boolean}
+ */
+var isPalindrome = function(x) {
+    // Write your solution here
+    
+};`,
+    },
+    testcases: [
+      { input: 'x = 121', expectedOutput: 'true' },
+      { input: 'x = -121', expectedOutput: 'false' },
+      { input: 'x = 10', expectedOutput: 'false' },
+    ],
+    hiddenTests: [
+      { input: 'x = 12321', expectedOutput: 'true' },
+      { input: 'x = 123', expectedOutput: 'false' },
+      { input: 'x = 0', expectedOutput: 'true' },
+    ],
+    hints: [
+      { type: 'Nudge', content: 'What happens to negative numbers?' },
+      { type: 'Clue', content: 'If you convert the number to a string, you can check if the string equals its reverse.' },
+      { type: 'Strategy', content: 'For a math-only approach, you can reverse the second half of the number and check if it matches the first half.' },
+    ],
+  },
+  {
+    id: 8,
+    slug: 'roman-to-integer',
+    title: 'Roman to Integer',
+    difficulty: 'Easy',
+    category: 'Strings',
+    tags: ['Hash Table', 'Math', 'String'],
+    acceptance: '58.4%',
+    description: `Roman numerals are represented by seven different symbols: \`I\`, \`V\`, \`X\`, \`L\`, \`C\`, \`D\` and \`M\`.
+
+For example, \`2\` is written as \`II\` in Roman numeral, just two ones added together. \`12\` is written as \`XII\`, which is simply \`X + II\`.
+
+Roman numerals are usually written largest to smallest from left to right. However, the numeral for four is not \`IIII\`. Instead, the number four is written as \`IV\`. Because the one is before the five we subtract it making four. The same principle applies to the number nine, which is written as \`IX\`. There are six instances where subtraction is used:
+- \`I\` can be placed before \`V\` (5) and \`X\` (10) to make 4 and 9. 
+- \`X\` can be placed before \`L\` (50) and \`C\` (100) to make 40 and 90. 
+- \`C\` can be placed before \`D\` (500) and \`M\` (1000) to make 400 and 900.
+
+Given a roman numeral, convert it to an integer.`,
+    examples: [
+      { input: 's = "III"', output: '3', explanation: 'III = 3.' },
+      { input: 's = "LVIII"', output: '58', explanation: 'L = 50, V= 5, III = 3.' },
+      { input: 's = "MCMXCIV"', output: '1994', explanation: 'M = 1000, CM = 900, XC = 90 and IV = 4.' },
+    ],
+    constraints: [
+      '1 <= s.length <= 15',
+      's contains only the characters (\'I\', \'V\', \'X\', \'L\', \'C\', \'D\', \'M\').',
+      'It is guaranteed that s is a valid roman numeral in the range [1, 3999].'
+    ],
+    starterCode: {
+      cpp: `#include <iostream>
+#include <string>
+using namespace std;
+
+class Solution {
+public:
+    int romanToInt(string s) {
+        // Write your solution here
+        
+    }
+};`,
+      java: `class Solution {
+    public int romanToInt(String s) {
+        // Write your solution here
+        
+    }
+}`,
+      python: `class Solution:
+    def romanToInt(self, s: str) -> int:
+        # Write your solution here
+        pass`,
+      javascript: `/**
+ * @param {string} s
+ * @return {number}
+ */
+var romanToInt = function(s) {
+    // Write your solution here
+    
+};`,
+    },
+    testcases: [
+      { input: 's = "III"', expectedOutput: '3' },
+      { input: 's = "LVIII"', expectedOutput: '58' },
+      { input: 's = "MCMXCIV"', expectedOutput: '1994' },
+    ],
+    hiddenTests: [
+      { input: 's = "IX"', expectedOutput: '9' },
+      { input: 's = "XL"', expectedOutput: '40' },
+      { input: 's = "MCDLXXVI"', expectedOutput: '1476' },
+    ],
+    hints: [
+      { type: 'Nudge', content: 'What is the integer value for each roman character? A hash map can help map characters to values.' },
+      { type: 'Clue', content: 'Iterate from left to right. If the current character is smaller than the next one, you need to subtract it.' },
+      { type: 'Strategy', content: 'Keep a running total. For each character, check if the value of the current character is less than the value of the next character. If so, subtract its value. Otherwise, add its value.' },
+    ],
+  },
+  {
+    id: 9,
+    slug: 'search-insert-position',
+    title: 'Search Insert Position',
+    difficulty: 'Easy',
+    category: 'Arrays',
+    tags: ['Array', 'Binary Search'],
+    acceptance: '43.7%',
+    description: `Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+
+You must write an algorithm with \`O(log n)\` runtime complexity.`,
+    examples: [
+      { input: 'nums = [1,3,5,6], target = 5', output: '2' },
+      { input: 'nums = [1,3,5,6], target = 2', output: '1' },
+      { input: 'nums = [1,3,5,6], target = 7', output: '4' },
+    ],
+    constraints: [
+      '1 <= nums.length <= 10⁴',
+      '-10⁴ <= nums[i] <= 10⁴',
+      'nums contains distinct values sorted in ascending order.',
+      '-10⁴ <= target <= 10⁴'
+    ],
+    starterCode: {
+      cpp: `#include <iostream>
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        // Write your solution here
+        
+    }
+};`,
+      java: `class Solution {
+    public int searchInsert(int[] nums, int target) {
+        // Write your solution here
+        
+    }
+}`,
+      python: `class Solution:
+    def searchInsert(self, nums: List[int], target: int) -> int:
+        # Write your solution here
+        pass`,
+      javascript: `/**
+ * @param {number[]} nums
+ * @param {number} target
+ * @return {number}
+ */
+var searchInsert = function(nums, target) {
+    // Write your solution here
+    
+};`,
+    },
+    testcases: [
+      { input: 'nums = [1,3,5,6]\ntarget = 5', expectedOutput: '2' },
+      { input: 'nums = [1,3,5,6]\ntarget = 2', expectedOutput: '1' },
+      { input: 'nums = [1,3,5,6]\ntarget = 7', expectedOutput: '4' },
+    ],
+    hiddenTests: [
+      { input: 'nums = [1]\ntarget = 0', expectedOutput: '0' },
+      { input: 'nums = [1,3,5,6]\ntarget = 0', expectedOutput: '0' },
+    ],
+    hints: [
+      { type: 'Nudge', content: 'Since the array is sorted, do we need to check every element? O(log n) requires binary search.' },
+      { type: 'Clue', content: 'Set low = 0 and high = len(nums) - 1. Find the mid point.' },
+      { type: 'Strategy', content: 'If nums[mid] == target, return mid. If nums[mid] < target, low = mid + 1. Else high = mid - 1. When the loop ends, return low.' },
+    ],
+  },
+  {
+    id: 10,
+    slug: 'climbing-stairs',
+    title: 'Climbing Stairs',
+    difficulty: 'Easy',
+    category: 'DP',
+    tags: ['Math', 'Dynamic Programming', 'Memoization'],
+    acceptance: '52.2%',
+    description: `You are climbing a staircase. It takes \`n\` steps to reach the top.
+
+Each time you can either climb \`1\` or \`2\` steps. In how many distinct ways can you climb to the top?`,
+    examples: [
+      { input: 'n = 2', output: '2', explanation: 'There are two ways to climb to the top.\n1. 1 step + 1 step\n2. 2 steps' },
+      { input: 'n = 3', output: '3', explanation: 'There are three ways to climb to the top.\n1. 1 step + 1 step + 1 step\n2. 1 step + 2 steps\n3. 2 steps + 1 step' },
+    ],
+    constraints: [
+      '1 <= n <= 45'
+    ],
+    starterCode: {
+      cpp: `#include <iostream>
+using namespace std;
+
+class Solution {
+public:
+    int climbStairs(int n) {
+        // Write your solution here
+        
+    }
+};`,
+      java: `class Solution {
+    public int climbStairs(int n) {
+        // Write your solution here
+        
+    }
+}`,
+      python: `class Solution:
+    def climbStairs(self, n: int) -> int:
+        # Write your solution here
+        pass`,
+      javascript: `/**
+ * @param {number} n
+ * @return {number}
+ */
+var climbStairs = function(n) {
+    // Write your solution here
+    
+};`,
+    },
+    testcases: [
+      { input: 'n = 2', expectedOutput: '2' },
+      { input: 'n = 3', expectedOutput: '3' },
+      { input: 'n = 4', expectedOutput: '5' },
+    ],
+    hiddenTests: [
+      { input: 'n = 5', expectedOutput: '8' },
+      { input: 'n = 10', expectedOutput: '89' },
+    ],
+    hints: [
+      { type: 'Nudge', content: 'To reach step n, you could have come from step n-1 or step n-2.' },
+      { type: 'Clue', content: 'This means ways(n) = ways(n-1) + ways(n-2). This is exactly the Fibonacci sequence!' },
+      { type: 'Strategy', content: 'You can use an array to store the number of ways for each step, or just two variables to keep track of the previous two steps to save space.' },
+    ],
+  },
 ];
 
 export const getProblemBySlug = (slug) => problems.find(p => p.slug === slug);
