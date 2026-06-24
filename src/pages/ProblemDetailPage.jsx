@@ -187,6 +187,7 @@ export default function ProblemDetailPage() {
              isOriginal
           });
         } catch (err) {
+          console.error('❌ Execute fetch error:', err);
           results.push({ success: false, output: '', error: 'Failed to connect to backend.', exitCode: -1, status: 'Error', inputUsed: inputToRun });
         }
       }
