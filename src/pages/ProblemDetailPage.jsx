@@ -164,10 +164,10 @@ export default function ProblemDetailPage() {
           
           let status = 'Error';
           let isCorrect = false;
+          const isOriginal = inputToRun.trim() === tc.input.trim();
           
           if (data.success && !data.error) {
              const inputVars = parseInputVars(inputToRun);
-             const isOriginal = inputToRun.trim() === tc.input.trim();
              const expectedToCompare = isOriginal ? tc.expectedOutput : null;
              
              if (expectedToCompare !== null) {
