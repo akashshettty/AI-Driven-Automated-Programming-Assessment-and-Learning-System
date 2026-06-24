@@ -153,6 +153,63 @@ int main(){
     return 0;
 }`;
             },
+            'find-the-highest-altitude': () => {
+                const gain = (vars.gain || '[-5,1,5,0,-7]').replace(/\[/g, '{').replace(/\]/g, '}');
+                return `${code}
+
+int main(){
+    vector<int> gain = ${gain};
+    Solution sol;
+    cout << sol.largestAltitude(gain) << endl;
+    return 0;
+}`;
+            },
+            'palindrome-number': () => {
+                const x = vars.x || '121';
+                return `${code}
+
+int main(){
+    int x = ${x};
+    Solution sol;
+    cout << (sol.isPalindrome(x) ? "true" : "false") << endl;
+    return 0;
+}`;
+            },
+            'roman-to-integer': () => {
+                const s = vars.s || '"III"';
+                return `${code}
+
+int main(){
+    string s = ${s};
+    Solution sol;
+    cout << sol.romanToInt(s) << endl;
+    return 0;
+}`;
+            },
+            'search-insert-position': () => {
+                const nums = (vars.nums || '[1,3,5,6]').replace(/\[/g, '{').replace(/\]/g, '}');
+                const target = vars.target || '5';
+                return `${code}
+
+int main(){
+    vector<int> nums = ${nums};
+    int target = ${target};
+    Solution sol;
+    cout << sol.searchInsert(nums, target) << endl;
+    return 0;
+}`;
+            },
+            'climbing-stairs': () => {
+                const n = vars.n || '2';
+                return `${code}
+
+int main(){
+    int n = ${n};
+    Solution sol;
+    cout << sol.climbStairs(n) << endl;
+    return 0;
+}`;
+            },
         };
         const builder = harnessMap[problemSlug];
         return builder ? builder() : wrapCode(code, language, rawInput);
@@ -208,6 +265,53 @@ if __name__ == "__main__":
     print(sol.maxSubArray(${nums}))
 `;
             },
+            'find-the-highest-altitude': () => {
+                const gain = vars.gain || '[-5,1,5,0,-7]';
+                return `${code}
+
+if __name__ == "__main__":
+    sol = Solution()
+    print(sol.largestAltitude(${gain}))
+`;
+            },
+            'palindrome-number': () => {
+                const x = vars.x || '121';
+                return `${code}
+
+if __name__ == "__main__":
+    sol = Solution()
+    print(str(sol.isPalindrome(${x})).lower())
+`;
+            },
+            'roman-to-integer': () => {
+                let s = vars.s || '"III"';
+                s = s.replace(/^"(.*)"$/, "'$1'");
+                return `${code}
+
+if __name__ == "__main__":
+    sol = Solution()
+    print(sol.romanToInt(${s}))
+`;
+            },
+            'search-insert-position': () => {
+                const nums = vars.nums || '[1,3,5,6]';
+                const target = vars.target || '5';
+                return `${code}
+
+if __name__ == "__main__":
+    sol = Solution()
+    print(sol.searchInsert(${nums}, ${target}))
+`;
+            },
+            'climbing-stairs': () => {
+                const n = vars.n || '2';
+                return `${code}
+
+if __name__ == "__main__":
+    sol = Solution()
+    print(sol.climbStairs(${n}))
+`;
+            },
         };
         // fix missing List import for python
         let fixed = code;
@@ -238,6 +342,27 @@ if __name__ == "__main__":
             'maximum-subarray': () => {
                 const nums = vars.nums || '[-2,1,-3,4,-1,2,1,-5,4]';
                 return `${code}\nconsole.log(maxSubArray(${nums}));`;
+            },
+            'find-the-highest-altitude': () => {
+                const gain = vars.gain || '[-5,1,5,0,-7]';
+                return `${code}\nconsole.log(largestAltitude(${gain}));`;
+            },
+            'palindrome-number': () => {
+                const x = vars.x || '121';
+                return `${code}\nconsole.log(isPalindrome(${x}));`;
+            },
+            'roman-to-integer': () => {
+                const s = vars.s || '"III"';
+                return `${code}\nconsole.log(romanToInt(${s}));`;
+            },
+            'search-insert-position': () => {
+                const nums = vars.nums || '[1,3,5,6]';
+                const target = vars.target || '5';
+                return `${code}\nconsole.log(searchInsert(${nums}, ${target}));`;
+            },
+            'climbing-stairs': () => {
+                const n = vars.n || '2';
+                return `${code}\nconsole.log(climbStairs(${n}));`;
             },
         };
         const builder = harnessMap[problemSlug];
